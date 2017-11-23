@@ -10,7 +10,7 @@ Badge::begin()
 {
 #ifndef CONFIG_FEATHER
 	// USB communication to PC via ARM coprocessor
-	Serial.begin ( 460800 );
+	Serial.begin ( 350000 );
 #else
 	// USB communicatoin to PC via the adapter chip
 	Serial.begin(115200);
