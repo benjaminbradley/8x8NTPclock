@@ -1,11 +1,11 @@
-#include "animation.h"
+#include "matrixAnimation.h"
 
-Animation::Animation()
+MatrixAnimation::MatrixAnimation()
 {
   init(0, NULL, RGB24, 0, 0);
 }
 
-Animation::Animation(uint16_t frameCount_,
+MatrixAnimation::MatrixAnimation(uint16_t frameCount_,
                      PGM_VOID_P frameData_,
                      Encoding encoding_,
                      uint16_t ledCount_,
@@ -15,7 +15,7 @@ Animation::Animation(uint16_t frameCount_,
   reset();
 }
 
-void Animation::init(uint16_t frameCount_,
+void MatrixAnimation::init(uint16_t frameCount_,
                      PGM_VOID_P frameData_,
                      Encoding encoding_,
                      uint16_t ledCount_,
@@ -29,21 +29,21 @@ void Animation::init(uint16_t frameCount_,
 
   switch(encoding) {
     case RGB24:
-      drawFunction = &Animation::drawRgb24;
+      drawFunction = &MatrixAnimation::drawRgb24;
       break;
 
     case RGB565_RLE:
-      drawFunction = &Animation::drawRgb565_RLE;
+      drawFunction = &MatrixAnimation::drawRgb565_RLE;
       break;
 
 #ifdef SUPPORTS_PALLETE_ENCODING
     case INDEXED:
-      drawFunction = &Animation::drawIndexed;
+      drawFunction = &MatrixAnimation::drawIndexed;
       loadColorTable();
       break;
 
     case INDEXED_RLE:
-      drawFunction = &Animation::drawIndexed_RLE;
+      drawFunction = &MatrixAnimation::drawIndexed_RLE;
       loadColorTable();
       break;
 #endif
@@ -53,7 +53,7 @@ void Animation::init(uint16_t frameCount_,
 }
  
 #ifdef SUPPORTS_PALLETE_ENCODING
-void Animation::loadColorTable() {
+void MatrixAnimation::loadColorTable() {
   colorTableEntries = pgm_read_byte(frameData) + 1;
 
   for(int i = 0; i < colorTableEntries; i++) {
@@ -64,42 +64,51 @@ void Animation::loadColorTable() {
 }
 #endif
 
-void Animation::reset() {
+void MatrixAnimation::reset() {
   frameIndex = 0;
 }
 
-void Animation::draw(struct CRGB strip[]) {
-  (this->*drawFunction)(strip);
+void MatrixAnimation::draw(RGBMatrix &matrix)
+{
+  (this->*drawFunction)(matrix);
 
-  LEDS.show();
+  matrix.show();
   
   frameIndex = (frameIndex + 1)%frameCount;
 };
 
-uint16_t Animation::getLedCount() const {
+uint16_t MatrixAnimation::getLedCount() const {
   return ledCount;
 }
 
-uint16_t Animation::getFrameCount() const {
+uint16_t MatrixAnimation::getFrameCount() const {
   return frameCount;
 }
 
-uint16_t Animation::getFrameDelay() const {
+uint16_t MatrixAnimation::getFrameIndex() const {
+  return frameIndex;
+}
+
+uint16_t MatrixAnimation::getFrameDelay() const {
   return frameDelay;
 }
 
-void Animation::drawRgb24(struct CRGB strip[]) {
+void MatrixAnimation::drawRgb24(RGBMatrix &matrix) {
   currentFrameData = frameData
     + frameIndex*ledCount*3;  // Offset for current frame
   
   for(uint16_t i = 0; i < ledCount; i++) {
-    strip[i] = CRGB(pgm_read_byte(currentFrameData + i*3    ),
-                    pgm_read_byte(currentFrameData + i*3 + 1),
-                    pgm_read_byte(currentFrameData + i*3 + 2));
+    PGM_VOID_P pixelPointer = currentFrameData + i*3;
+    int row = i / LED_COLS;
+    int col = i % LED_COLS;
+    uint8_t r = pgm_read_byte(pixelPointer);
+    uint8_t g = pgm_read_byte(pixelPointer + 1);
+    uint8_t b = pgm_read_byte(pixelPointer + 2);
+    matrix.set(row, col, r, g, b);
   }
 }
 
-void Animation::drawRgb565_RLE(struct CRGB strip[]) {
+void MatrixAnimation::drawRgb565_RLE(RGBMatrix &matrix) {
   if(frameIndex == 0) {
     currentFrameData = frameData;
   }
@@ -117,7 +126,10 @@ void Animation::drawRgb565_RLE(struct CRGB strip[]) {
     uint8_t b = ((lowerByte & 0x1F) << 3);
     
     for(uint8_t i = 0; i < run_length; i++) {
-      strip[count + i] = CRGB(r,g,b);
+      int ledindex = count + i;
+      int row = ledindex / LED_COLS;
+      int col = ledindex % LED_COLS;
+      matrix.set(row, col, r, g, b);
     }
     
     count += run_length;
@@ -126,17 +138,19 @@ void Animation::drawRgb565_RLE(struct CRGB strip[]) {
 };
 
 #ifdef SUPPORTS_PALLETE_ENCODING
-void Animation::drawIndexed(struct CRGB strip[]) {
+void MatrixAnimation::drawIndexed(RGBMatrix &matrix) {
   currentFrameData = frameData
     + 1 + 3*colorTableEntries   // Offset for color table
     + frameIndex*ledCount;      // Offset for current frame
   
   for(uint16_t i = 0; i < ledCount; i++) {
-    strip[i] = colorTable[pgm_read_byte(currentFrameData + i)];
+    int row = i / LED_COLS;
+    int col = i % LED_COLS;
+    matrix.set(row, col, colorTable[pgm_read_byte(currentFrameData + i)]);
   }
 }
 
-void Animation::drawIndexed_RLE(struct CRGB strip[]) {
+void MatrixAnimation::drawIndexed_RLE(RGBMatrix &matrix) {
   if(frameIndex == 0) {
     currentFrameData = frameData
       + 1 + 3*colorTableEntries;   // Offset for color table
@@ -149,7 +163,10 @@ void Animation::drawIndexed_RLE(struct CRGB strip[]) {
     uint8_t colorIndex = pgm_read_byte(currentFrameData++);
     
     for(uint8_t i = 0; i < run_length; i++) {
-      strip[count++] = colorTable[colorIndex];
+      int row = count / LED_COLS;
+      int col = count % LED_COLS;
+      matrix.set(row, col, colorTable[colorIndex]);
+      count++;
     }
   }
 };

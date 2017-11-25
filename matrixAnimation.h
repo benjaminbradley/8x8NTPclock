@@ -1,10 +1,10 @@
-#ifndef ANIMATION_H
-#define ANIMATION_H
+#ifndef MATRIX_ANIMATION_H
+#define MATRIX_ANIMATION_H
 
 #include <Arduino.h>
-#include <FastLED.h>
+#include "RGBMatrix.h"
 
-class Animation {
+class MatrixAnimation {
  public:
   typedef enum {
     RGB24 = 0,
@@ -18,15 +18,15 @@ class Animation {
   // Initialize the animation with no data. This is intended for the case
   // where the animation will be re-initialized from a memory structure in ROM
   // after the sketch starts.
-  Animation();
+  MatrixAnimation();
 
   // Initialize the animation
   // @param frameCount Number of frames in this animation
   // @param frameData Pointer to the frame data. Format of this data is encoding-specficic
   // @param encoding Method used to encode the animation data
-  // @param ledCount Number of LEDs in the strip
+  // @param ledCount Number of LEDs in the matrix
   // @param frameDelay Number of milliseconds to wait between frames
-  Animation(uint16_t frameCount,
+  MatrixAnimation(uint16_t frameCount,
             PGM_VOID_P frameData,
             Encoding encoding,
             uint16_t ledCount,
@@ -36,7 +36,7 @@ class Animation {
   // @param frameCount Number of frames in this animation
   // @param frameData Pointer to the frame data. Format of this data is encoding-specficic
   // @param encoding Method used to encode the animation data
-  // @param ledCount Number of LEDs in the strip
+  // @param ledCount Number of LEDs in the matrix
   // @param frameDelay Number of milliseconds to wait between frames
   void init(uint16_t frameCount,
             PGM_VOID_P frameData,
@@ -48,15 +48,16 @@ class Animation {
   void reset();
   
   // Draw the next frame of the animation
-  // @param strip[] LED strip to draw to.
-  void draw(struct CRGB strip[]);
+  // @param matrix[] LED matrix to draw to.
+  void draw(RGBMatrix &matrix);
 
   uint16_t getLedCount() const;
   uint16_t getFrameCount() const;
   uint16_t getFrameDelay() const;
+  uint16_t getFrameIndex() const;
 
  private:
-  uint16_t ledCount;              // Number of LEDs in the strip
+  uint16_t ledCount;              // Number of LEDs in the matrix
   uint16_t frameCount;            // Number of frames in this animation
   uint16_t frameDelay;            // Milliseconds to wait between frames
 
@@ -73,15 +74,15 @@ class Animation {
   void loadColorTable();          // Load the color table from memory
 #endif
 
-  typedef void (Animation::*DrawFunction)(struct CRGB strip[]);
+  typedef void (MatrixAnimation::*DrawFunction)(RGBMatrix &matrix);
   DrawFunction drawFunction;
 
-  void drawRgb24(struct CRGB strip[]);
-  void drawRgb565_RLE(struct CRGB strip[]);
+  void drawRgb24(RGBMatrix &matrix);
+  void drawRgb565_RLE(RGBMatrix &matrix);
 
 #ifdef SUPPORTS_PALLETE_ENCODING
-  void drawIndexed(struct CRGB strip[]);
-  void drawIndexed_RLE(struct CRGB strip[]);
+  void drawIndexed(RGBMatrix &matrix);
+  void drawIndexed_RLE(RGBMatrix &matrix);
 #endif
 };
 
