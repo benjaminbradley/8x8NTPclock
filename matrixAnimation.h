@@ -9,6 +9,7 @@ class MatrixAnimation {
   typedef enum {
     RGB24 = 0,
     RGB565_RLE = 1,
+    RGB565 = 4,
 #ifdef SUPPORTS_PALLETE_ENCODING
     INDEXED = 2,
     INDEXED_RLE = 3
@@ -55,6 +56,9 @@ class MatrixAnimation {
   uint16_t getFrameCount() const;
   uint16_t getFrameDelay() const;
   uint16_t getFrameIndex() const;
+  void setFrameIndex(uint16_t frameIndex_);
+
+  void decompress();
 
  private:
   uint16_t ledCount;              // Number of LEDs in the matrix
@@ -63,9 +67,12 @@ class MatrixAnimation {
 
   Encoding encoding;              // Encoding type
   PGM_VOID_P frameData;           // Pointer to the begining of the frame data
+  uint8_t bytesPerLED;            // number of bytes used to encode each LED's status
   
   uint16_t frameIndex;            // Current animation frame
   PGM_VOID_P currentFrameData;    // Pointer to the current position in the frame data
+
+  uint8_t* decodedFrameData;      // frame data decoded from RLE
 
 #ifdef SUPPORTS_PALLETE_ENCODING
   uint8_t colorTableEntries;      // Number of entries in the color table, minus 1 (max 255)
@@ -79,6 +86,7 @@ class MatrixAnimation {
 
   void drawRgb24(RGBMatrix &matrix);
   void drawRgb565_RLE(RGBMatrix &matrix);
+  void drawRgb565(RGBMatrix &matrix);
 
 #ifdef SUPPORTS_PALLETE_ENCODING
   void drawIndexed(RGBMatrix &matrix);
