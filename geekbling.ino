@@ -5,13 +5,15 @@
 #include "matrixAnimation.h"
 #include "sample-animation-spinner-small.h"
 #include "frame-letters.h"
+#include "matrixScroller.h"
 
 Badge badge;
 
 const uint8_t DEMO_WIPE = 0;
 const uint8_t DEMO_ANIMATION = 1;
 const uint8_t DEMO_LETTERS = 2;
-const uint8_t num_demos = 3;
+const uint8_t DEMO_SCROLLER = 3;
+const uint8_t num_demos = 4;
 
 // runtime variables
 uint8_t cur_demo = DEMO_WIPE;
@@ -19,6 +21,8 @@ uint32_t last_draw_millis;
 uint32_t update_frequency;
 // demo persistence variables
 uint16_t msg_idx = 0;
+
+MatrixScroller scroller("0123");
 
 void setup()
 {
@@ -82,12 +86,20 @@ void loop()
       msg_idx = 0;
       cur_demo++;
     }
+  } else if(cur_demo == DEMO_SCROLLER) {
+    update_frequency = 200; // update every 200ms
+    scroller.draw(badge.matrix);
+    if(scroller.getPosition() == 0) {
+      // the scroller has completed one play-through, switch to the next demo
+      cur_demo++;
+    }
   }
 
   // wrap around if we've played all the demos
   if(cur_demo == num_demos)
     cur_demo = 0;
 }
+
 
 
 
