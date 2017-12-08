@@ -30,7 +30,6 @@ class MatrixScroller {
     //uint8_t messageIndex = 0;
     //uint8_t charIndex = 0;
 
-//TODO: define number bitmaps
     uint8_t bitmap_numbers[10][5][3] = {
       //0
       {
@@ -43,10 +42,10 @@ class MatrixScroller {
       //1
       {
         {0,1,0},
+        {1,1,0},
         {0,1,0},
         {0,1,0},
-        {0,1,0},
-        {0,1,0},
+        {1,1,1},
       },
       //2
       {
@@ -113,6 +112,17 @@ class MatrixScroller {
         {0,0,1},
       },
     };  // end of bitmap_numbers[]
+
+    uint8_t bitmap_symbols[1][5][3] = {
+      //space
+      {
+        {0,0,0},
+        {0,0,0},
+        {0,0,0},
+        {0,0,0},
+        {0,0,0},
+      },
+    };
 
 };
 

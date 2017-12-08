@@ -23,9 +23,15 @@ void MatrixScroller::draw(RGBMatrix &matrix)
     // get the next character in the message
     uint8_t charValue = message[messageIndex];
     // TODO: work with letters (not just numbers)
-    uint8_t charIntValue = charValue - '0';   // integer value for the number
     // get the bitmap for this character
-    uint8_t* char_bitmap = *bitmap_numbers[charIntValue];
+    uint8_t* char_bitmap;
+    if(charValue >= '0' && charValue <= '9') {
+      uint8_t charIntValue = charValue - '0';   // integer value for the number
+      char_bitmap = *bitmap_numbers[charIntValue];
+    } else /*if(charValue == 32)*/ {
+      // draw a space
+      char_bitmap = *bitmap_symbols[0];
+    }
     
     for(uint8_t y = 0; y < LED_ROWS; y++) {
       if(charIndex == CHAR_WIDTH  // this is the spacer in between characters
