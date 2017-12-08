@@ -6,10 +6,15 @@
 MatrixScroller::MatrixScroller(String message_) {
   message = message_;
   position = 0;
+  color = 0xffffff;
 }
 
 uint8_t MatrixScroller::getPosition() {
   return position;
+}
+
+void MatrixScroller::setColor(uint32_t color_) {
+  color = color_;
 }
 
 void MatrixScroller::draw(RGBMatrix &matrix)
@@ -41,7 +46,7 @@ void MatrixScroller::draw(RGBMatrix &matrix)
       } else {
         uint8_t onoff = char_bitmap[y*3 + charIndex];
         if(onoff == 1) {
-          matrix.set(y, x, 254, 254, 254);
+          matrix.set(y, x, color);
         } else {
           matrix.set(y, x, 0,0,0);
         }

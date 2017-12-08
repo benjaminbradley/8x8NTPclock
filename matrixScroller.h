@@ -20,6 +20,8 @@ class MatrixScroller {
 
     uint8_t getPosition();
     
+    void setColor(uint32_t color_);
+
     // draw the next frame on the matrix and advance the horizontal position by one column
     // @param matrix[] LED matrix to draw to.
     void draw(RGBMatrix &matrix);
@@ -27,8 +29,7 @@ class MatrixScroller {
   private:
     String message;
     uint8_t position = 0;
-    //uint8_t messageIndex = 0;
-    //uint8_t charIndex = 0;
+    uint32_t color = 0;
 
     uint8_t bitmap_numbers[10][5][3] = {
       //0
