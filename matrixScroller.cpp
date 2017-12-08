@@ -12,19 +12,6 @@ uint8_t MatrixScroller::getPosition() {
   return position;
 }
 
-/*
-void MatrixAnimation::draw(RGBMatrix &matrix)
-{
-  for(uint8_t x = 0; x < LED_COLS; x++) {
-    for(uint8_t y = 0; y < LED_ROWS; y++) {
-      //step 2: ???
-      // get the next character
-      uint8_t messageValue = message[messageIndex];
-      // get the bitmap for this character
-    }
-  }
-  */
-
 void MatrixScroller::draw(RGBMatrix &matrix)
 {
   uint8_t messageIndex;
@@ -60,7 +47,7 @@ void MatrixScroller::draw(RGBMatrix &matrix)
   
   position++;
   // check for wrap-around
-  if(position >= message.length()*CHAR_WIDTH) {
+  if(position >= (message.length()+1)*CHAR_WIDTH) {
     position = 0;
   }
 };

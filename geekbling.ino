@@ -22,7 +22,7 @@ uint32_t update_frequency;
 // demo persistence variables
 uint16_t msg_idx = 0;
 
-MatrixScroller scroller("0123");
+MatrixScroller scroller("01234567890");
 
 void setup()
 {
@@ -87,7 +87,7 @@ void loop()
       cur_demo++;
     }
   } else if(cur_demo == DEMO_SCROLLER) {
-    update_frequency = 200; // update every 200ms
+    update_frequency = 100; // update every 100ms
     scroller.draw(badge.matrix);
     if(scroller.getPosition() == 0) {
       // the scroller has completed one play-through, switch to the next demo
