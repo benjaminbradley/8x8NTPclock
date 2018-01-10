@@ -28,7 +28,7 @@ class MatrixScroller {
 
   private:
     String message;
-    uint8_t position = 0;
+    uint16_t position = 0;
     uint32_t color = 0;
 
     uint8_t bitmap_numbers[10][5][3] = {

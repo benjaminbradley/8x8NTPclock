@@ -16,13 +16,13 @@ const uint8_t DEMO_SCROLLER = 3;
 const uint8_t num_demos = 4;
 
 // runtime variables
-uint8_t cur_demo = DEMO_WIPE;
+uint8_t cur_demo = DEMO_SCROLLER;
 uint32_t last_draw_millis;
 uint32_t update_frequency;
 // demo persistence variables
 uint16_t msg_idx = 0;
 
-MatrixScroller scroller("01234567890");
+MatrixScroller scroller(" !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
 void setup()
 {

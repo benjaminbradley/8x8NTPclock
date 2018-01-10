@@ -30,12 +30,12 @@ void MatrixScroller::draw(RGBMatrix &matrix)
     // TODO: work with letters (not just numbers)
     // get the bitmap for this character
     uint8_t* char_bitmap;
-    if(charValue >= '0' && charValue <= '9') {
-      uint8_t charIntValue = charValue - '0';   // integer value for the number
-      char_bitmap = *bitmap_numbers[charIntValue];
-    } else /*if(charValue == 32)*/ {
-      // draw a space
-      char_bitmap = *bitmap_symbols[0];
+    if(charValue >= ' ' && charValue <= 127) {
+      uint8_t charIntValue = charValue - ' ';   // integer value for the number
+      char_bitmap = *bitmap_ascii[charIntValue];
+    } else {
+      // draw a question mark
+      char_bitmap = *bitmap_ascii[31];
     }
     
     for(uint8_t y = 0; y < LED_ROWS; y++) {
