@@ -22,7 +22,7 @@ uint32_t update_frequency;
 // demo persistence variables
 uint16_t msg_idx = 0;
 
-MatrixScroller scroller(" !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+MatrixScroller scroller(" !@#$%^&*()[]<>{}+-=_?/\\:;,.`'\"|~0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 8008135!  ");
 
 void setup()
 {
@@ -87,7 +87,7 @@ void loop()
       cur_demo++;
     }
   } else if(cur_demo == DEMO_SCROLLER) {
-    update_frequency = 100; // update every 100ms
+    update_frequency = 150; // update every 100ms
     scroller.draw(badge.matrix);
     if(scroller.getPosition() == 0) {
       // the scroller has completed one play-through, switch to the next demo

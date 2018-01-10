@@ -9,7 +9,7 @@ MatrixScroller::MatrixScroller(String message_) {
   color = 0xffffff;
 }
 
-uint8_t MatrixScroller::getPosition() {
+uint16_t MatrixScroller::getPosition() {
   return position;
 }
 
@@ -19,15 +19,14 @@ void MatrixScroller::setColor(uint32_t color_) {
 
 void MatrixScroller::draw(RGBMatrix &matrix)
 {
-  uint8_t messageIndex;
+  uint16_t messageIndex;
   uint8_t charIndex;
-  
+
   for(uint8_t x = 0; x < LED_COLS; x++) {
     messageIndex = (position+x) / (CHAR_WIDTH+1); // character count within message
     charIndex = (position+x) % (CHAR_WIDTH+1);    // column within character bitmap
     // get the next character in the message
     uint8_t charValue = message[messageIndex];
-    // TODO: work with letters (not just numbers)
     // get the bitmap for this character
     uint8_t* char_bitmap;
     if(charValue >= ' ' && charValue <= 127) {
@@ -57,8 +56,11 @@ void MatrixScroller::draw(RGBMatrix &matrix)
   matrix.show();
   
   position++;
+  Serial.print("position is ");Serial.println(position);
   // check for wrap-around
-  if(position >= (message.length()+1)*CHAR_WIDTH) {
+  if(position >= (message.length()+1)*(CHAR_WIDTH+1)) {
+    Serial.print("wrapping scroller when position is ");Serial.println(position);
+    Serial.print("message length is ");Serial.println(message.length());
     position = 0;
   }
 };

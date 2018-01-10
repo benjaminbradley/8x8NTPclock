@@ -18,7 +18,7 @@ class MatrixScroller {
     // pass in string to be displayed
     MatrixScroller(String message_);
 
-    uint8_t getPosition();
+    uint16_t getPosition();
     
     void setColor(uint32_t color_);
 
@@ -51,8 +51,8 @@ class MatrixScroller {
       // "
       {
         {0,0,0},
-        {0,1,1},
-        {0,1,1},
+        {1,0,1},
+        {1,0,1},
         {0,0,0},
         {0,0,0},
       },
@@ -283,7 +283,7 @@ class MatrixScroller {
       // ?
       {
         {1,1,1},
-        {1,0,1},
+        {0,0,1},
         {0,1,0},
         {0,0,0},
         {0,1,0},
@@ -578,8 +578,8 @@ class MatrixScroller {
       },
       // d
       {
-        {0,0,0},
-        {0,0,0},
+        {0,0,1},
+        {0,0,1},
         {0,1,1},
         {1,0,1},
         {0,1,1},
